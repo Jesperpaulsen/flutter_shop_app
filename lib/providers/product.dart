@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:shop_app/models/http_exception.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -16,8 +20,23 @@ class Product with ChangeNotifier {
       @required this.imageUrl,
       this.isFavorite = false});
 
-  void toggleFavoriteStatus() {
+  Future<void> toggleFavoriteStatus() async {
+    final oldStatus = isFavorite;
+    final url =
+        'https://flutter-shop-app-48927.firebaseio.com/products/$id.json/';
     isFavorite = !isFavorite;
     notifyListeners();
+    try {
+      final response = await http.patch(url,
+          body: json.encode({
+            'isFavorite': isFavorite,
+          }));
+      if (response.statusCode >= 400) {
+        throw HttpException('Unable to delete product $id');
+      }
+    } catch (error) {
+      isFavorite = oldStatus;
+      notifyListeners();
+    }
   }
 }
