@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/screens/product_detail_screen.dart';
 import 'package:shop_app/screens/user_products_screen.dart';
 
+import 'helpers/custom_route.dart';
 import 'providers/auth.dart';
 import 'providers/cart.dart';
 import 'providers/orders.dart';
@@ -47,10 +49,13 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
             title: 'MyShop',
             theme: ThemeData(
-              primarySwatch: Colors.purple,
-              accentColor: Colors.deepOrange,
-              fontFamily: 'Lato',
-            ),
+                primarySwatch: Colors.purple,
+                accentColor: Colors.deepOrange,
+                fontFamily: 'Lato',
+                pageTransitionsTheme: PageTransitionsTheme(builders: {
+                  TargetPlatform.android: CustomPageTransitionBuilder(),
+                  TargetPlatform.iOS: CustomPageTransitionBuilder(),
+                })),
             home: auth.isAuth
                 ? ProductsOverviewScreen()
                 : FutureBuilder(
